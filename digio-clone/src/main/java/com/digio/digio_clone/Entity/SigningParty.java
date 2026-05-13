@@ -29,9 +29,9 @@ public class SigningParty {
 
     private String otp;
 
-    private boolean otpVarified = false;
+    private Boolean otpVarified = false;
 
-    private boolean signed = false;
+    private Boolean signed = false;
 
     private LocalDateTime signedAt;
 

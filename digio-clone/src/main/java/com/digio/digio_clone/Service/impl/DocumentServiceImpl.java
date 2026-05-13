@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -87,5 +88,38 @@ public class DocumentServiceImpl implements DocumentService {
                         .status(signer.getStatus())
                         .build()).collect(Collectors.toList())).build();
         return new ApiResponse<>( true, "Document fetched successfully", responseDTO);
+    }
+
+    @Override
+    public ApiResponse<?> initiateSigning(Long documentId) {
+        Document document = documentRepository.findById(documentId).orElseThrow(()
+        -> new RuntimeException("Document not found"));
+
+        // CHECK IF EXPIRED
+        if (document.getCreatedAt().plusDays(document.getExpireInDays())
+                .isBefore(LocalDateTime.now())) {
+            document.setStatus(DocumentStatus.EXPIRED);
+
+            documentRepository.save(document);
+
+            throw new RuntimeException("Document Expired");
+        }
+
+        // GENERATE OTP FOR ALL SIGNERS
+        for (SigningParty signer : document.getSigningParties()) {
+            String otp = String.valueOf(100000 + new Random().nextInt(900000));
+
+            signer.setOtp(otp);
+
+            signer.setStatus("OTP_SENT");
+
+            System.out.println("OTP for " + signer.getIdentifier() + " : " + otp);
+        }
+
+        document.setStatus(DocumentStatus.REQUESTED);
+
+        documentRepository.save(document);
+
+        return new ApiResponse<>(true, "OTP generated successfully", document.getDigioDocumentId());
     }
 }

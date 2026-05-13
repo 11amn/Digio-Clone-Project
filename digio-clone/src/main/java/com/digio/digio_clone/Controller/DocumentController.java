@@ -23,4 +23,9 @@ public class DocumentController {
     public ApiResponse<?> getDocumentById(@PathVariable Long id){
         return documentService.getDocumentById(id);
     }
+
+    @PostMapping("/{id}/initiate")
+    public ApiResponse<?> initiateSigning(@PathVariable Long id) {
+        return documentService.initiateSigning(id);
+    }
 }

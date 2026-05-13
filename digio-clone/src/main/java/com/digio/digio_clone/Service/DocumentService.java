@@ -7,4 +7,5 @@ public interface DocumentService {
 
     ApiResponse<?> uploadDocument(DigioSignRequest request);
     ApiResponse<?> getDocumentById(Long id);
+    ApiResponse<?> initiateSigning(Long documentId);
 }
