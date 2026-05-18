@@ -1,13 +1,13 @@
-package com.digio.digio_clone.Service.impl;
+package com.digio.digio_clone.service.impl;
 
 
-import com.digio.digio_clone.DTO.*;
-import com.digio.digio_clone.DTO.response.DigioSignResponse;
-import com.digio.digio_clone.Entity.Document;
-import com.digio.digio_clone.Entity.SigningParty;
-import com.digio.digio_clone.Enums.DocumentStatus;
-import com.digio.digio_clone.Repository.DocumentRepository;
-import com.digio.digio_clone.Service.DocumentService;
+import com.digio.digio_clone.dto.*;
+import com.digio.digio_clone.dto.response.DigioSignResponse;
+import com.digio.digio_clone.entity.Document;
+import com.digio.digio_clone.entity.SigningParty;
+import com.digio.digio_clone.enums.DocumentStatus;
+import com.digio.digio_clone.repository.DocumentRepository;
+import com.digio.digio_clone.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;

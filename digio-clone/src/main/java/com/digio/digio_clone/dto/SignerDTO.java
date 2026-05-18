@@ -1,4 +1,4 @@
-package com.digio.digio_clone.DTO;
+package com.digio.digio_clone.dto;
 
 
 import lombok.AllArgsConstructor;

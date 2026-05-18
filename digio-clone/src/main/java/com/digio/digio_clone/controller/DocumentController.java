@@ -1,11 +1,11 @@
-package com.digio.digio_clone.Controller;
+package com.digio.digio_clone.controller;
 
 
-import com.digio.digio_clone.DTO.ApiResponse;
-import com.digio.digio_clone.DTO.DigioSignRequest;
-import com.digio.digio_clone.DTO.SignDocumentRequest;
-import com.digio.digio_clone.DTO.response.DigioSignResponse;
-import com.digio.digio_clone.Service.DocumentService;
+import com.digio.digio_clone.dto.ApiResponse;
+import com.digio.digio_clone.dto.DigioSignRequest;
+import com.digio.digio_clone.dto.SignDocumentRequest;
+import com.digio.digio_clone.dto.response.DigioSignResponse;
+import com.digio.digio_clone.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

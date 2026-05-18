@@ -1,9 +1,9 @@
-package com.digio.digio_clone.Service;
+package com.digio.digio_clone.service;
 
-import com.digio.digio_clone.DTO.ApiResponse;
-import com.digio.digio_clone.DTO.DigioSignRequest;
-import com.digio.digio_clone.DTO.SignDocumentRequest;
-import com.digio.digio_clone.DTO.response.DigioSignResponse;
+import com.digio.digio_clone.dto.ApiResponse;
+import com.digio.digio_clone.dto.DigioSignRequest;
+import com.digio.digio_clone.dto.SignDocumentRequest;
+import com.digio.digio_clone.dto.response.DigioSignResponse;
 
 public interface DocumentService {
 

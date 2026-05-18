@@ -1,4 +1,4 @@
-package com.digio.digio_clone.Enums;
+package com.digio.digio_clone.enums;
 
 public enum DocumentStatus {
 

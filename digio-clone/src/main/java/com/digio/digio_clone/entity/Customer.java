@@ -1,7 +1,7 @@
-package com.digio.digio_clone.Entity;
+package com.digio.digio_clone.entity;
 
 
-import com.digio.digio_clone.Enums.CustomerStatus;
+import com.digio.digio_clone.enums.CustomerStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

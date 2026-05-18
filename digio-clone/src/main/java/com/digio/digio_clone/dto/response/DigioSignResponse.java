@@ -1,6 +1,6 @@
-package com.digio.digio_clone.DTO.response;
+package com.digio.digio_clone.dto.response;
 
-import com.digio.digio_clone.DTO.SignerDTO;
+import com.digio.digio_clone.dto.SignerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

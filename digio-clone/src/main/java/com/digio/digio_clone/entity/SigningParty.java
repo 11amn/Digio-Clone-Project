@@ -1,4 +1,4 @@
-package com.digio.digio_clone.Entity;
+package com.digio.digio_clone.entity;
 
 
 import jakarta.persistence.*;
