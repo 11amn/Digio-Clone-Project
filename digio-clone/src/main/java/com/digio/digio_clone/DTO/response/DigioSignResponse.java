@@ -1,12 +1,18 @@
-package com.digio.digio_clone.DTO;
+package com.digio.digio_clone.DTO.response;
 
-
+import com.digio.digio_clone.DTO.SignerDTO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-public class DigioSignRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+public class DigioSignResponse {
+
+    private String id;
 
     private List<SignerDTO> signers;
 
@@ -19,8 +25,6 @@ public class DigioSignRequest {
     private Boolean notifySigners;
 
     private String fileName;
-
-    private String fileData;
 
     private String agreementType;
 

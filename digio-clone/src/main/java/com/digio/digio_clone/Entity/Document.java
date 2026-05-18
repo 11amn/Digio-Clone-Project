@@ -35,11 +35,25 @@ public class Document {
 
     private boolean notifySigners;
 
+    private String agreementType;
+
+    private Boolean isAgreement;
+
+    private Boolean selfSigned;
+
+    private String channel;
+
+    private String selfSignType;
+
+    private String signedDocUrl;
+
+    private String unsignedDocUrl;
+
+    private Integer noOfPages;
+
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String fileData;
-
-    private String fileStorageUrl;
 
     private LocalDateTime createdAt;
 
