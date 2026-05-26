@@ -59,11 +59,7 @@ public class DocumentServiceImpl implements DocumentService {
         Document document = new Document();
 
         document.setDigioDocumentId(
-                "DOC-" + UUID.randomUUID()
-                        .toString()
-                        .replace("-", "")
-                        .substring(0, 10)
-                        .toUpperCase()
+                generateDigioDocumentId()
         );
 
         document.setFileName(request.getFileName());
@@ -224,9 +220,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public ApiResponse<?> getDocumentById(Long id) {
+    public ApiResponse<?> getDocumentById(String id) {
 
-        Document document = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
+        Document document = documentRepository.findByDocumentId(id).orElseThrow(() -> new RuntimeException("Document not found"));
 
         DocumentResponseDTO responseDTO = DocumentResponseDTO.builder().id(document.getId()).digioDocumentId(document.getDigioDocumentId())
                 .fileName(document.getFileName())
@@ -243,8 +239,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public ApiResponse<?> initiateSigning(Long documentId) {
-        Document document = documentRepository.findById(documentId).orElseThrow(()
+    public ApiResponse<?> initiateSigning(String documentId) {
+        Document document = documentRepository.findByDigioDocumentId(documentId).orElseThrow(()
         -> new RuntimeException("Document not found"));
 
         // CHECK IF EXPIRED
@@ -276,8 +272,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public ApiResponse<?> signDocument(Long documentId, SignDocumentRequest request) {
-        Document document = documentRepository.findById(documentId).orElseThrow(()
+    public ApiResponse<?> signDocument(String documentId, SignDocumentRequest request) {
+        Document document = documentRepository.findByDigioDocumentId(documentId).orElseThrow(()
         -> new RuntimeException("Document not found"));
 
         // CHECK EXPIRE
@@ -322,9 +318,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public byte[] downloadDocument(Long documentId) {
+    public byte[] downloadDocument(String documentId) {
 
-        Document document = documentRepository.findById(documentId).orElseThrow(() -> new RuntimeException("Document not found"));
+        Document document = documentRepository.findByDigioDocumentId(documentId).orElseThrow(() -> new RuntimeException("Document not found"));
 
         // ONLY SIGNED DOCS DOWNLOADABLE
         if (!document.getStatus().equals(DocumentStatus.SIGNED)) {
@@ -350,11 +346,11 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public byte[] downloadSignedDocument(
-            Long documentId
+            String documentId
     ) {
 
         Document document =
-                documentRepository.findById(documentId)
+                documentRepository.findByDigioDocumentId(documentId)
                         .orElseThrow(() ->
                                 new RuntimeException(
                                         "Document not found"
@@ -448,5 +444,24 @@ public class DocumentServiceImpl implements DocumentService {
                     "Unable to add watermark"
             );
         }
+    }
+    private String generateDigioDocumentId() {
+
+        String timestamp =
+                LocalDateTime.now()
+                        .format(
+                                DateTimeFormatter.ofPattern(
+                                        "ddMMyyyyHHmmss"
+                                )
+                        );
+
+        String randomPart =
+                UUID.randomUUID()
+                        .toString()
+                        .replace("-", "")
+                        .substring(0, 12)
+                        .toUpperCase();
+
+        return "DID" + timestamp + randomPart;
     }
 }

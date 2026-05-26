@@ -25,23 +25,27 @@ public class DocumentController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<?> getDocumentById(@PathVariable Long id){
+    public ApiResponse<?> getDocumentById(@PathVariable String id){
         return documentService.getDocumentById(id);
     }
 
-    @PostMapping("/{id}/initiate")
-    public ApiResponse<?> initiateSigning(@PathVariable Long id) {
-        return documentService.initiateSigning(id);
+    @PostMapping("/{documentId}/initiate")
+    public ApiResponse<?> initiateSigning(
+            @PathVariable String documentId
+    ) {
+
+        return documentService
+                .initiateSigning(documentId);
     }
 
-    @PostMapping("/{id}/sign")
-    public ApiResponse<?> signDocument(@PathVariable Long id, @RequestBody SignDocumentRequest request) {
-        return documentService.signDocument(id, request);
+    @PostMapping("/{documentId}/sign")
+    public ApiResponse<?> signDocument(@PathVariable String documentId, @RequestBody SignDocumentRequest request) {
+        return documentService.signDocument(documentId, request);
     }
 
     @GetMapping("/{documentId}/download")
     public ResponseEntity<byte[]> downloadDocument(
-            @PathVariable Long documentId
+            @PathVariable String documentId
     ) {
 
         byte[] pdf =

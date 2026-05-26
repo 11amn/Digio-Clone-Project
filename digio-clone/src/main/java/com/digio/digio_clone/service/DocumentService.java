@@ -8,10 +8,10 @@ import com.digio.digio_clone.dto.response.DigioSignResponse;
 public interface DocumentService {
 
     ApiResponse<DigioSignResponse> uploadDocument(DigioSignRequest request);
-    ApiResponse<?> getDocumentById(Long id);
-    ApiResponse<?> initiateSigning(Long documentId);
-    ApiResponse<?> signDocument(Long documentId, SignDocumentRequest request);
-    byte[] downloadDocument(Long documentId);
+    ApiResponse<?> getDocumentById(String id);
+    ApiResponse<?> initiateSigning(String documentId);
+    ApiResponse<?> signDocument(String documentId, SignDocumentRequest request);
+    byte[] downloadDocument(String documentId);
 
-    byte[] downloadSignedDocument(Long documentId);
+    byte[] downloadSignedDocument(String documentId);
 }
