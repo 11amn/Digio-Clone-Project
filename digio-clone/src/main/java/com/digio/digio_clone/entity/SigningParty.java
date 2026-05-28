@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "signing_parties")
@@ -21,23 +23,28 @@ public class SigningParty {
 
     private String identifier;
 
+    private String status;
+
+    private Boolean signed = false;
+
+    private LocalDateTime expireOn;
+
+    private LocalDateTime signedAt;
+
     private String reason;
 
     private String signType;
 
-    private String status;
-
-    private LocalDateTime expireOn;
-
-    private String otp;
-
-    private Boolean otpVarified = false;
-
-    private Boolean signed = false;
-
-    private LocalDateTime signedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id")
     private Document document;
+
+    @OneToMany(
+            mappedBy = "signingParty",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<SigningPartyOtp> otps =
+            new ArrayList<>();
 }

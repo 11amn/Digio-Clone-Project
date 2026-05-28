@@ -5,6 +5,7 @@ import com.digio.digio_clone.dto.*;
 import com.digio.digio_clone.dto.response.DigioSignResponse;
 import com.digio.digio_clone.entity.Document;
 import com.digio.digio_clone.entity.SigningParty;
+import com.digio.digio_clone.entity.SigningPartyOtp;
 import com.digio.digio_clone.enums.DocumentStatus;
 import com.digio.digio_clone.repository.DocumentRepository;
 import com.digio.digio_clone.service.DocumentService;
@@ -17,6 +18,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
+import com.digio.digio_clone.repository.SigningPartyOtpRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final SigningPartyOtpRepository signingPartyOtpRepository;
 
     @Override
     public ApiResponse<DigioSignResponse> uploadDocument(
@@ -257,12 +260,33 @@ public class DocumentServiceImpl implements DocumentService {
         for (SigningParty signer : document.getSigningParties()) {
             String otp = String.valueOf(100000 + new Random().nextInt(900000));
 
-            signer.setOtp(otp);
+            SigningPartyOtp otpEntity =
+                    new SigningPartyOtp();
+
+            otpEntity.setOtp(otp);
+
+            otpEntity.setVerified(false);
+
+            otpEntity.setCreatedAt(
+                    LocalDateTime.now()
+            );
+
+            otpEntity.setExpiresAt(
+                    LocalDateTime.now().plusMinutes(2)
+            );
+
+            otpEntity.setStatus("ACTIVE");
+
+            otpEntity.setSigningParty(signer);
+
+            signer.getOtps().add(otpEntity);
 
             signer.setStatus("OTP_SENT");
 
             System.out.println("OTP for " + signer.getIdentifier() + " : " + otp);
         }
+
+
 
         document.setStatus(DocumentStatus.REQUESTED);
 
@@ -286,22 +310,49 @@ public class DocumentServiceImpl implements DocumentService {
             throw new RuntimeException("Document expired");
         }
 
+
+
         // FIND SIGNER
         SigningParty signer = document.getSigningParties().stream()
                 .filter(s -> s.getIdentifier().equals(request.getIdentifier()))
                 .findFirst().orElseThrow(() -> new RuntimeException("Signer not found"));
 
-        // VERIFY OTP
-        if (!signer.getOtp().equals(request.getOtp())) {
+        SigningPartyOtp otpEntity =
+                signer.getOtps()
+                        .stream()
+                        .filter(otp ->
+                                otp.getOtp()
+                                        .equals(request.getOtp())
+                        )
+                        .findFirst()
+                        .orElseThrow(() ->
+                                new RuntimeException("Invalid OTP")
+                        );
 
-            throw new RuntimeException("Invalid OTP");
+        if (otpEntity.getExpiresAt()
+                .isBefore(LocalDateTime.now())) {
+
+            otpEntity.setStatus("EXPIRED");
+
+            signingPartyOtpRepository.save(otpEntity);
+
+            return new ApiResponse<>(
+                    false,
+                    "OTP Expired",
+                    null
+            );
         }
 
-        // MARK VERIFIED
-        signer.setOtpVarified(true);
-        signer.setSigned(true);
-        signer.setSignedAt(LocalDateTime.now());
-        signer.setStatus("SIGNED");
+        otpEntity.setVerified(true);
+
+        otpEntity.setVerifiedAt(
+                LocalDateTime.now()
+        );
+
+        otpEntity.setStatus("VERIFIED");
+
+        signingPartyOtpRepository.save(otpEntity);
+
 
         // CHECK ALL SIGNERS
         boolean allSigned = document.getSigningParties().stream().allMatch(SigningParty::getSigned);
@@ -405,7 +456,7 @@ public class DocumentServiceImpl implements DocumentService {
 
                 contentStream.setFont(
                         new PDType1Font(
-                                Standard14Fonts.FontName.HELVETICA_BOLD
+                                Standard14Fonts.FontName.HELVETICA
                         ),
                         10
                 );
